@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var output = '';
-var testType;
 
 var results = {
     score: null,
@@ -10,16 +9,14 @@ var results = {
     error: null
 };
 
-
 process.stdin.on('data', function(data) {
     output += data;
 });
 
 process.stdin.on('end', function() {
-    if (output.match(/mocha\s--reporter\sspec/)) {
-        gradeMocha(output);
-    }
-    else gradeTestem(output);
+    if (output.match(/mocha/)) gradeMocha(output);
+    else if (output.match(/testem/)) gradeTestem(output);
+    else results.error = 'Error occured while grading assessment';
     process.stdout.write(JSON.stringify(results,null,4));
 });
 
@@ -53,7 +50,7 @@ function gradeMocha(data) {
     var failed = failedMatch ? Number(failedMatch[1]) : 0;
     var pendingMatch = data.match(/(\d+)\s+pending/);
     var pending = pendingMatch ? Number(pendingMatch[1]) : 0;
-    if (passed === 0 && failed === 0 && pending === 0) results.error = 'Error occurred while grading assessment';
+    if (!passed && !failed && !pending) results.error = 'Error occurred while grading assessment';
     results.passed = passed;
     results.failed = failed + pending;
     results.score = passed / (passed + failed + pending) * 100;
@@ -66,7 +63,7 @@ function gradeTestem(data) {
     var passed = passedMatch ? Number(passedMatch[1]) : 0;
     var failedMatch = data.match(/#\s+fail\s+(\d+)/);
     var failed = failedMatch ? Number(failedMatch[1]) : 0;
-    if (passed === 0 && tests === 0 && failed === 0) results.error = 'Error occurred while grading assessment';
+    if (!passed && !tests && !failed) results.error = 'Error occurred while grading assessment';
     results.passed = passed;
     results.failed = failed;
     results.score = passed / tests * 100;
