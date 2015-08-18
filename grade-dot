@@ -14,57 +14,26 @@ process.stdin.on('data', function(data) {
 });
 
 process.stdin.on('end', function() {
-    if (output.match(/mocha/)) gradeMocha(output);
-    else if (output.match(/testem/)) gradeTestem(output);
-    else results.error = 'Error occured while grading assessment';
-    process.stdout.write(JSON.stringify(results,null,4));
+    gradeAssessment(output);
+    process.stdout.write(JSON.stringify(results, null, 4));
 });
 
-
-//exec('npm run grade', {cwd: process.cwd(), maxBuffer: Math.pow(10, 7)})
-//.then(function(data) {
-//    if (data.match(/mocha\s--reporter\sspec/)) {
-//        gradeMocha(data);
-//    }
-//    else gradeTestem(data);
-//}, function(err) {
-//    if (err.match(/mocha/)) {
-//        gradeMocha(err);
-//    }
-//    else if (err.match(/testem/)) {
-//        gradeTestem(err);
-//    }
-//    else results.error = err.message;
-//})
-//.catch(function(err) {
-//    results.error = err.message;
-//})
-//.finally(function() {
-//    fs.write('results.json', JSON.stringify(results, null, 4), {cwd: process.cwd()});
-//});
-
-function gradeMocha(data) {
-    var passedMatch = data.match(/(\d+)\s+passing/);
-    var passed = passedMatch ? Number(passedMatch[1]) : 0;
-    var failedMatch = data.match(/(\d+)\s+failing/);
-    var failed = failedMatch ? Number(failedMatch[1]) : 0;
-    var pendingMatch = data.match(/(\d+)\s+pending/);
-    var pending = pendingMatch ? Number(pendingMatch[1]) : 0;
-    if (!passed && !failed && !pending) results.error = 'Error occurred while grading assessment';
-    results.passed = passed;
-    results.failed = failed + pending;
-    results.score = passed / (passed + failed + pending) * 100;
+function gradeAssessment(data) {
+    if (data.match(/mocha/)) var testType = 'mocha';
+    else if (data.match(/testem/)) var testType = 'testem';
+    else return results.error = 'Error occured while grading assessment';
+    results.passed = getNumberOfTests(data, 'pass', testType);
+    results.failed = getNumberOfTests(data, 'fail', testType);
+    if (!results.passed && !results.failed) results.error = 'Error occurred while grading assessment';
+    results.score = results.passed / (results.passed + results.failed) * 100;
 }
 
-function gradeTestem(data) {
-    var testsMatch = data.match(/#\s+tests\s+(\d+)/);
-    var tests = testsMatch ? Number(testsMatch[1]) : 0;
-    var passedMatch = data.match(/#\s+pass\s+(\d+)/);
-    var passed = passedMatch ? Number(passedMatch[1]) : 0;
-    var failedMatch = data.match(/#\s+fail\s+(\d+)/);
-    var failed = failedMatch ? Number(failedMatch[1]) : 0;
-    if (!passed && !tests && !failed) results.error = 'Error occurred while grading assessment';
-    results.passed = passed;
-    results.failed = failed;
-    results.score = passed / tests * 100;
+function getNumberOfTests(data, status, type) {
+    var testDictionary = {
+        mocha: '(\\d+)\\s+' + status + 'ing',
+        testem: '#\\s+' + status + '\\s+(\\d+)'
+    };
+    var matchArr = data.match(testDictionary[type]);
+    return matchArr ? Number(matchArr[1]) : 0;
 }
+
