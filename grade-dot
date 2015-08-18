@@ -1,0 +1,94 @@
+#!/usr/bin/env node
+
+var output = '';
+var testType;
+
+process.stdin.on('data', function(data) {
+    output += data;
+});
+
+process.stdin.on('end', function() {
+    console.log(output)
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//var exec = require('child-process-promise').exec;
+//var fs = require('q-io/fs');
+
+//var results = {
+    //score: null,
+    //passed: null,
+    //failed: null,
+    //error: null
+//};
+
+
+//exec('npm run grade', {cwd: process.cwd(), maxBuffer: Math.pow(10, 7)})
+//.then(function(data) {
+    //if (data.stdout.match(/mocha\s--reporter\sspec/)) {
+        //gradeMocha(data);
+    //}
+    //else gradeTestem(data);
+//}, function(err) {
+    //if (err.stdout.match(/mocha/)) {
+        //gradeMocha(err);
+    //}
+    //else if (err.stdout.match(/testem/)) {
+        //gradeTestem(err);
+    //}
+    //else results.error = err.message;
+//})
+//.catch(function(err) {
+    //results.error = err.message;
+//})
+//.finally(function() {
+    //fs.write('results.json', JSON.stringify(results, null, 4), {cwd: process.cwd()});
+//});
+
+//function gradeMocha(data) {
+    //var passedMatch = data.stdout.match(/(\d+)\s+passing/);
+    //var passed = passedMatch ? Number(passedMatch[1]) : 0;
+    //var failedMatch = data.stdout.match(/(\d+)\s+failing/);
+    //var failed = failedMatch ? Number(failedMatch[1]) : 0;
+    //var pendingMatch = data.stdout.match(/(\d+)\s+pending/);
+    //var pending = pendingMatch ? Number(pendingMatch[1]) : 0;
+    //if (passed === 0 && failed === 0 && pending === 0) throw new Error('Error occurred while grading assessment');
+    //results.passed = passed;
+    //results.failed = failed + pending;
+    //results.score = passed / (passed + failed + pending) * 100;
+//}
+
+//function gradeTestem(data) {
+    //var testsMatch = data.stdout.match(/#\s+tests\s+(\d+)/);
+    //var tests = testsMatch ? Number(testsMatch[1]) : 0;
+    //var passedMatch = data.stdout.match(/#\s+pass\s+(\d+)/);
+    //var passed = passedMatch ? Number(passedMatch[1]) : 0;
+    //var failedMatch = data.stdout.match(/#\s+fail\s+(\d+)/);
+    //var failed = failedMatch ? Number(failedMatch[1]) : 0;
+    //if (passed === 0 && tests === 0 && failed === 0) throw new Error('Error occurred while grading assessment');
+    //results.passed = passed;
+    //results.failed = failed;
+    //results.score = passed / tests * 100;
+//}

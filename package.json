@@ -1,0 +1,17 @@
+{
+  "name": "grade-dot-test",
+  "version": "0.1.61",
+  "description": "A test version of the grade-dot command line tool.",
+  "bin": {
+    "grade-dot": "grade-dot"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jimmy Farrell <jfarrell22@gmail.com> (http://heyjimmy.co)",
+  "dependencies": {
+    "child-process-promise": "^1.1.0",
+    "q-io": "^1.13.1"
+  },
+  "preferGlobal": "true"
+}
